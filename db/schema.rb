@@ -32,5 +32,5 @@ ActiveRecord::Schema.define(version: 2019_08_16_170344) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "contacts", "users", column: "owner_id", on_delete: :cascade
+  add_foreign_key "contacts", "users", column: "owner_id"
 end
