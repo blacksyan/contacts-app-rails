@@ -27,7 +27,7 @@ RSpec.describe 'Contacts API' do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find user/)
+        expect(response.body).to include("Couldn't find User")
       end
     end
   end
@@ -53,7 +53,7 @@ RSpec.describe 'Contacts API' do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find contact/)
+        expect(response.body).to include("Couldn't find Contact")
       end
     end
   end
@@ -75,10 +75,6 @@ RSpec.describe 'Contacts API' do
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
       end
-
-      it 'returns a failure message' do
-        expect(response.body).to match(/Validation failed: Name can't be blank/)
-      end
     end
   end
 
@@ -93,7 +89,7 @@ RSpec.describe 'Contacts API' do
       end
 
       it 'updates the contact' do
-        updated_contact = contact.find(id)
+        updated_contact = Contact.find(id)
         expect(updated_contact.name).to match(/Mozart/)
       end
     end
@@ -106,7 +102,7 @@ RSpec.describe 'Contacts API' do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find contact/)
+        expect(response.body).to include("Couldn't find Contact")
       end
     end
   end
