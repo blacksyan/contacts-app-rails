@@ -32,6 +32,30 @@ RSpec.describe 'Contacts API' do
     end
   end
 
+  describe 'Search user contacts' do
+    before do
+      create(:contact, owner_id: user_id, name: "Balmond", mobile: "12345678")
+    end
+
+    context 'when user search by name' do
+      it 'returns status code 200' do
+        get "/users/#{user_id}/contacts", params: { query: "Balm" }
+        expect(response).to have_http_status(200)
+        expect(json.size).to eq(1)
+        expect(json.first["name"]).to match("Balmond")
+      end
+    end
+
+    context 'when user search by phone' do
+      it 'returns status code 200' do
+        get "/users/#{user_id}/contacts", params: { query: "12345678" }
+        expect(response).to have_http_status(200)
+        expect(json.size).to eq(1)
+        expect(json.first["name"]).to match("Balmond")
+      end
+    end    
+  end  
+
   describe 'Show contact detail' do
     before { get "/users/#{user_id}/contacts/#{id}" }
 
@@ -60,6 +84,17 @@ RSpec.describe 'Contacts API' do
 
   describe 'Create contact' do
     let(:valid_attributes) { { name: 'Narnia', mobile: "+62818-0311-3231" } }
+    let(:valid_attributes2) { 
+      { 
+        name: 'Ilham', 
+        mobile: "+62818-0311-3231", 
+        others: {
+          email: "ilham@email.com",
+          skype: "ilham",
+          id_kaskus: "ilham.adi",
+        } 
+      } 
+    }
 
     context 'when request attributes are valid' do
       before { post "/users/#{user_id}/contacts", params: valid_attributes }
@@ -68,6 +103,14 @@ RSpec.describe 'Contacts API' do
         expect(response).to have_http_status(201)
       end
     end
+
+    context 'when user have others attributes' do
+      before { post "/users/#{user_id}/contacts", params: valid_attributes2 }
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
+    end    
 
     context 'when an invalid request' do
       before { post "/users/#{user_id}/contacts", params: {} }
