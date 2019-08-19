@@ -3,7 +3,10 @@ class ContactsController < ApplicationController
   before_action :set_user_contact, only: [:show, :update, :destroy]
 
   def index
-    json_response(user_contacts)
+    query = params[:query]
+    contacts = query ? search_contact(query) : user_contacts
+
+    json_response(contacts)  
   end
 
   def show
@@ -26,6 +29,22 @@ class ContactsController < ApplicationController
   end
 
   private
+
+  def search_contact(query)
+    response = Contact.__elasticsearch__.search(
+      query: {
+        multi_match: {
+          query: query,
+          fields: ['name', 'mobile', 'work', 'office']
+        }
+      }
+    ).results
+
+    {
+      results: response.results,
+      total: response.total
+    }
+  end
 
   def contact_params
     params.permit(:name, :mobile, :work, :office, others: {})

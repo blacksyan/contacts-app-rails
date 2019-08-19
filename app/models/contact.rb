@@ -1,13 +1,20 @@
+require 'elasticsearch/model'
+
 class Contact < ApplicationRecord
   belongs_to :owner, class_name: "User"
+	include Elasticsearch::Model
+	include Elasticsearch::Model::Callbacks
 
   validates :name, :owner_id, presence: true
 
-  def self.search(query)
-    if query.present?
-      where("name ilike :q or mobile ilike :q or work ilike :q or office ilike :q", q: "%#{query}%")
-    else
-      where(nil)
-    end
+  def as_indexed_json(options = {})
+    self.as_json(
+      only: [:name, :mobile, :work, :office],
+      include: {
+        owner: {
+          only: [:name]
+        }
+      }
+    )
   end
 end
