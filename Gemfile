@@ -28,6 +28,11 @@ gem 'elasticsearch-model'
 gem 'elasticsearch-rails', '~> 5.0.0'
 gem 'virtus'
 
+gem 'redis'
+gem 'redis-namespace'
+gem 'redis-rails'
+gem 'redis-rack-cache'
+
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 

@@ -1,4 +1,5 @@
 class ContactsController < ApplicationController
+  include ContactsHelper
   before_action :set_user
   before_action :set_user_contact, only: [:show, :update, :destroy]
 
@@ -31,7 +32,7 @@ class ContactsController < ApplicationController
   private
 
   def search_contact(query)
-    response = Contact.__elasticsearch__.search(
+    response = @user.contacts.__elasticsearch__.search(
       query: {
         multi_match: {
           query: query,
@@ -59,8 +60,6 @@ class ContactsController < ApplicationController
   end
 
   def user_contacts
-  	contacts = @user.contacts
-  	contacts = contacts.search(params[:query]) if params[:query]
-  	contacts
+    fetch_contacts_redis(@user)
   end
 end
